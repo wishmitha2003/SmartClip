@@ -1,11 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Read Later Saver",
+  "name": "SmartClip",
   "version": "1.0.0",
-  "description": "Save articles in one click",
+  "description": "SmartClip Chrome extension",
   "permissions": ["activeTab", "storage", "tabs"],
+
+  "icons": {
+    "128": "icon.png"
+  },
+
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Save Article"
+    "default_title": "SmartClip",
+    "default_icon": "icon.png"
   }
 }
