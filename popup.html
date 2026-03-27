@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartClip</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3Z" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 8H17M7 12H13" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="logo-text">SmartClip</span>
+      </div>
+      <span id="article-count" class="badge">0</span>
+    </header>
+
+    <!-- Current Page Section -->
+    <section class="current-page">
+      <div class="current-page-info">
+        <p id="current-title" class="current-title">Loading page info…</p>
+        <p id="current-url" class="current-url"></p>
+      </div>
+      <button id="save-btn" class="btn btn-primary" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        Save
+      </button>
+    </section>
+
+    <!-- Filter Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-filter="all">All</button>
+      <button class="tab" data-filter="unread">Unread</button>
+      <button class="tab" data-filter="read">Read</button>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrapper">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none">
+        <circle cx="11" cy="11" r="7" stroke="#888" stroke-width="2"/>
+        <path d="M16.5 16.5L21 21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <input id="search-input" type="text" class="search-input" placeholder="Search saved articles…" />
+    </div>
+
+    <!-- Reading List -->
+    <section class="reading-list" id="reading-list">
+      <p class="empty-state" id="empty-state">No saved articles yet.</p>
+    </section>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
