@@ -3,18 +3,32 @@ const message = document.getElementById("message");
 const count = document.getElementById("count");
 const articlesList = document.getElementById("articlesList");
 
-function showMessage(text, color) {
+let messageTimeout;
+
+function showMessage(text, type = "info") {
+  clearTimeout(messageTimeout);
+  
   message.textContent = text;
-  message.style.color = color;
+  message.className = `show ${type}`;
+  
+  // Set color based on type
+  if (type === "success") message.style.color = "var(--success)";
+  else if (type === "error") message.style.color = "var(--error)";
+  else message.style.color = "var(--warning)";
+
+  messageTimeout = setTimeout(() => {
+    message.className = "";
+  }, 3000);
 }
 
 function formatDate(dateString) {
   const date = new Date(dateString);
-  return date.toLocaleString();
+  const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+  return date.toLocaleDateString(undefined, options);
 }
 
 function updateSavedCount(total) {
-  count.textContent = `${total} article${total !== 1 ? "s" : ""}`;
+  count.textContent = `${total} item${total !== 1 ? "s" : ""}`;
 }
 
 function renderArticles() {
@@ -23,7 +37,7 @@ function renderArticles() {
     updateSavedCount(articles.length);
 
     if (articles.length === 0) {
-      articlesList.innerHTML = `<p class="empty-text">No saved articles yet.</p>`;
+      articlesList.innerHTML = `<p class="empty-text">Your library is empty.<br>Save articles to see them here.</p>`;
       return;
     }
 
@@ -32,13 +46,17 @@ function renderArticles() {
     articles.forEach((article, index) => {
       const card = document.createElement("div");
       card.className = "article-card";
+      card.style.animationDelay = `${index * 0.05}s`;
 
       card.innerHTML = `
-        <p class="article-title">${article.title}</p>
-        <a class="article-url" href="${article.url}" target="_blank">${article.url}</a>
+        <div class="article-title" title="${article.title}">${article.title}</div>
+        <a class="article-url" href="${article.url}" target="_blank" title="${article.url}">${article.url}</a>
         <div class="article-footer">
           <span class="article-date">${formatDate(article.savedAt)}</span>
-          <button class="delete-btn" data-index="${index}">Delete</button>
+          <button class="delete-btn" data-index="${index}" title="Remove article">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            Delete
+          </button>
         </div>
       `;
 
@@ -48,7 +66,8 @@ function renderArticles() {
     const deleteButtons = document.querySelectorAll(".delete-btn");
     deleteButtons.forEach((button) => {
       button.addEventListener("click", (e) => {
-        const index = parseInt(e.target.getAttribute("data-index"));
+        const btn = e.currentTarget;
+        const index = parseInt(btn.getAttribute("data-index"));
         deleteArticle(index);
       });
     });
@@ -61,7 +80,7 @@ function deleteArticle(index) {
     articles.splice(index, 1);
 
     chrome.storage.local.set({ articles }, () => {
-      showMessage("Article deleted.", "red");
+      showMessage("Removed from library", "error");
       renderArticles();
     });
   });
@@ -72,14 +91,14 @@ saveBtn.addEventListener("click", async () => {
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
 
     if (!tabs || tabs.length === 0) {
-      showMessage("No active tab found.", "red");
+      showMessage("No active tab found.", "error");
       return;
     }
 
     const activeTab = tabs[0];
 
     const article = {
-      title: activeTab.title || "Untitled",
+      title: activeTab.title || "Untitled Article",
       url: activeTab.url || "",
       savedAt: new Date().toISOString()
     };
@@ -92,21 +111,24 @@ saveBtn.addEventListener("click", async () => {
       );
 
       if (alreadySaved) {
-        showMessage("This article is already saved.", "orange");
+        showMessage("Already in library", "warning");
         return;
       }
 
       const updatedArticles = [article, ...existingArticles];
 
       chrome.storage.local.set({ articles: updatedArticles }, () => {
-        showMessage("Article saved successfully!", "green");
+        showMessage("Saved successfully!", "success");
         renderArticles();
       });
     });
   } catch (error) {
     console.error(error);
-    showMessage("Error saving article.", "red");
+    showMessage("Error saving article.", "error");
   }
 });
 
-renderArticles();
+// Initial render
+document.addEventListener('DOMContentLoaded', () => {
+  renderArticles();
+});
