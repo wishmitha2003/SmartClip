@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartClip</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>SmartClip</h2>
+    <p class="subtitle">Save articles in one click</p>
+
+    <button id="saveBtn">Save Current Article</button>
+
+    <p id="message"></p>
+
+    <div class="saved-section">
+      <div class="saved-header">
+        <h3>Saved Articles</h3>
+        <span id="count">0 articles</span>
+      </div>
+
+      <div id="articlesList" class="articles-list">
+        <p class="empty-text">No saved articles yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
