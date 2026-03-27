@@ -50,25 +50,37 @@ function renderArticles() {
 
       card.innerHTML = `
         <div class="article-title" title="${article.title}">${article.title}</div>
-        <a class="article-url" href="${article.url}" target="_blank" title="${article.url}">${article.url}</a>
         <div class="article-footer">
           <span class="article-date">${formatDate(article.savedAt)}</span>
-          <button class="delete-btn" data-index="${index}" title="Remove article">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-            Delete
-          </button>
+          <div class="btn-group">
+            <button class="open-btn" data-url="${article.url}" title="Open article">Open</button>
+            <button class="delete-btn" data-index="${index}" title="Remove article">Delete</button>
+          </div>
         </div>
       `;
 
       articlesList.appendChild(card);
     });
 
+    // Add listeners for Delete
     const deleteButtons = document.querySelectorAll(".delete-btn");
     deleteButtons.forEach((button) => {
       button.addEventListener("click", (e) => {
         const btn = e.currentTarget;
         const index = parseInt(btn.getAttribute("data-index"));
         deleteArticle(index);
+      });
+    });
+
+    // Add listeners for Open
+    const openButtons = document.querySelectorAll(".open-btn");
+    openButtons.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const btn = e.currentTarget;
+        const url = btn.getAttribute("data-url");
+        if (url) {
+          chrome.tabs.create({ url: url });
+        }
       });
     });
   });
